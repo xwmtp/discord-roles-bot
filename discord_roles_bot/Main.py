@@ -1,5 +1,6 @@
 from Bot import Bot
 from Config import check_configurations
+from Logger import initalize_logger
 
 if __name__ == '__main__':
 
@@ -13,6 +14,7 @@ if __name__ == '__main__':
            \n-----------------------------------------\n")
 
     if check_configurations():
+        initalize_logger()
         bot = Bot()
         bot.run_bot()
 

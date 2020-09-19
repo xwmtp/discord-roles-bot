@@ -1,6 +1,8 @@
 from Message_handler import Message_handler
 from Config import config
 import discord
+import logging
+logger = logging.getLogger('roles_bot.bot')
 
 class Bot(discord.Client):
 
@@ -12,11 +14,11 @@ class Bot(discord.Client):
         self.run(config()['bot']['token'])
 
     async def on_ready(self):
-        print(f'Logged on as Discord user {self.user}')
+        logger.info(f'Logged on as Discord user {self.user}')
 
     async def send_message(self, outgoing_message, channel):
         await channel.send(outgoing_message)
-        print(f'Sent message to #{channel.name}: ' + outgoing_message)
+        logger.info(f'Sent response in #{channel.name}: ' + outgoing_message)
 
 
     async def on_message(self, message):
@@ -24,7 +26,7 @@ class Bot(discord.Client):
         if message.author == self.user:
             return
 
-        print('Received message: ' + message.content)
+        logger.debug(f'[#{message.channel}] {message.author}: ' + message.content)
 
         #try:
 

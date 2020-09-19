@@ -1,5 +1,7 @@
 from Config import config
 from Helpers import extract_command, get_bot_role
+import logging
+logger = logging.getLogger('roles_bot.command')
 
 class Command:
 
@@ -7,25 +9,31 @@ class Command:
         self.name = name
         self.triggers = triggers
         try:
-            self.channel = config()['commands'][self.name]['channel']
+            self.channel = config()['commands'][self.name]['channel'].replace(' ', '-')
         except KeyError:
             self.channel = None
 
     def trigger(self, message, bot):
+        trigger_command = self.check_triggered(message, bot)
+        if trigger_command:
+            logger.info(f"Trigger message in #{message.channel} from {message.author}: {message.content}")
+            return True
 
+
+    def check_triggered(self, message, bot):
         if self.contains_command_trigger(message):
             if not self.check_permission(message.author, message.guild, bot):
-                print(f"Author '{message.author}' does not have permission to use command '{self.name}'")
+                logger.info(f"Author '{message.author}' does not have permission to use command '{self.name}'")
                 return False
             if self.channel:
                 if str(message.channel) == self.channel:
-                    print(f"Triggered command '{self.name}' in channel #{self.channel}")
+                    logger.info(f"Triggered command '{self.name}' in channel #{self.channel}")
                     return True
                 else:
-                    print(f"Command '{self.name}' only triggers in channel #{self.channel}")
+                    logger.info(f"Command '{self.name}' only triggers in channel #{self.channel}")
                     return False
             else:
-                print(f"Triggered command '{self.name}'")
+                logger.info(f"Triggered command '{self.name}'")
                 return True
 
     def check_permission(self, author, guild, bot):

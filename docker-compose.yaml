@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  discord-roles-bot:
+    build:
+      context: .
+    image: discord-roles-bot
+    volumes:
+      - /discord-roles-bot/volumes/configuration:/etc/discord-roles-bot/configuration
+      - /discord-roles-bot/volumes/log:/etc/discord-roles-bot/log
+    restart: unless-stopped
