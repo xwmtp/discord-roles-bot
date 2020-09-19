@@ -1,2 +1,5 @@
 bot:
-    oauth: oauth123
+    token: token123
+commands:
+    roles:
+      allow_adding_multiple_roles_at_once: True

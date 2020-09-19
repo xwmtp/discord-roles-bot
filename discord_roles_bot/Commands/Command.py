@@ -1,4 +1,5 @@
 from Config import config
+from Helpers import extract_command
 
 class Command:
 
@@ -6,11 +7,19 @@ class Command:
         self.name = name
         self.triggers = triggers
         try:
-            self.channel = config()[self.name.lower()]['channel']
-        except IndexError:
+            self.channel = config()['commands'][self.name.lower()]['channel']
+        except KeyError:
             self.channel = None
 
-
     def trigger(self, message):
-        if not self.channel or message.channel == self.channel:
-            return any([trigger.lower() in message.content.lower() for trigger in self.triggers])
+        potential_command = extract_command(message.content.lower())
+        if any([potential_command == trigger.lower() for trigger in self.triggers]):
+            if self.channel:
+                if str(message.channel) == self.channel:
+                    print(f"Triggered command '{self.name}' in channel #{self.channel}")
+                    return True
+                else:
+                    print(f"Command '{self.name}' only triggers in channel #{self.channel}")
+                    return False
+            else:
+                return True

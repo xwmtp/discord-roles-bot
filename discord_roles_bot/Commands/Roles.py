@@ -15,11 +15,11 @@ class Roles(Command):
         response = []
 
         words = message.content.split(' ')
+        if len(words) <= 1:
+            return 'Please add a role that you want added or removed'
+
         command = words[0]
         requested_roles = self.get_requested_roles(words)
-
-        if len(requested_roles) <= 1:
-            return response.append('Please add a role that you want added or removed.')
 
         available_roles = get_roles(bot, message.guild, True)
         unavailable_roles = get_roles(bot, message.guild, False)
@@ -36,12 +36,14 @@ class Roles(Command):
             else:
                 response.append(f"{message.author.mention} Invalid role `{requested_role}`, use `!roles` to see availables roles")
 
-
         return response
 
     def get_requested_roles(self, words):
+        max_roles = config()['commands'][self.name]['max_roles_at_once']
+        if not max_roles:
+            max_roles = 5
         if config()['commands'][self.name]['allow_adding_multiple_roles_at_once']:
-            return words[1:]
+            return words[1:max_roles+1]
         else:
             return [' '.join(words[1:])]
 

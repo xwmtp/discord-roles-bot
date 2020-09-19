@@ -9,7 +9,7 @@ class Bot(discord.Client):
         self.message_handler = Message_handler()
 
     def run_bot(self):
-        self.run(config()['bot']['oauth'])
+        self.run(config()['bot']['token'])
 
     async def on_ready(self):
         print(f'Logged on as Discord user {self.user}')

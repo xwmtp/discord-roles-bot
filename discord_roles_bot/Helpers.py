@@ -7,10 +7,10 @@ def get_kappa(guild):
     except Exception:
         return 'Kappa'
 
-def find_string_match(str, lst):
-    for item in lst:
-        if str.lower() == str(item).lower():
-            return str
+def find_string_match(item, lst):
+    for elem in lst:
+        if str(item).lower() == str(elem).lower():
+            return elem
 
 
 def get_roles(bot, guild, availible):
@@ -19,3 +19,6 @@ def get_roles(bot, guild, availible):
         return [role for role in guild.roles if role <  bot_role and str(role) != '@everyone']
     else:
         return [role for role in guild.roles if role >= bot_role]
+
+def extract_command(message):
+    return message.split(' ')[0]
