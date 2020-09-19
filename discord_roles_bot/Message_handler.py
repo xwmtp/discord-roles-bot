@@ -15,7 +15,7 @@ class Message_handler:
     async def get_response(self, message, bot):
         """Looks for commands in message and returns a response if a command is triggered"""
         for command in self.commands:
-            if command.trigger(message):
+            if command.trigger(message, bot):
                 response = await command.get_response(message, bot)
                 if response and response != []:
                     return response

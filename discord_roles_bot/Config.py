@@ -47,6 +47,15 @@ def validate_config(dct):
     except KeyError:
         return print(f"ERROR: config.yml doesn't contain the required commands/roles setting 'allow_adding_multiple_roles_at_once'. Consult the README.")
 
+    for command in dct['commands'].keys():
+        try:
+            permission = dct['commands'][command]['permission']
+            permission_values = ['above', 'below', 'anyone']
+            if permission not in permission_values:
+                return print(f"ERROR: The setting 'permission' can only have one of the following values: {permission_values}.")
+        except KeyError:
+            pass
+
     return True
 
 
