@@ -8,41 +8,44 @@ class Command:
     def __init__(self, name, triggers):
         self.name = name
         self.triggers = triggers
-        try:
-            self.channel = config()['commands'][self.name]['channel'].replace(' ', '-')
-        except KeyError:
-            self.channel = None
 
-    def trigger(self, message, bot):
-        trigger_command = self.check_triggered(message, bot)
+    def get_channel(self, settings):
+        try:
+            return settings['commands'][self.name]['channel'].replace(' ', '-')
+        except KeyError:
+            return None
+
+    def trigger(self, settings, message, bot):
+        trigger_command = self.check_triggered(settings, message, bot)
         if trigger_command:
             logger.info(f"Trigger message in #{message.channel} from {message.author}: {message.content}")
             return True
 
 
-    def check_triggered(self, message, bot):
+    def check_triggered(self, settings, message, bot):
         if self.contains_command_trigger(message):
-            if not self.check_permission(message.author, message.guild, bot):
+            if not self.check_permission(message, settings, bot):
                 logger.info(f"Author '{message.author}' does not have permission to use command '{self.name}'")
                 return False
-            if self.channel:
-                if str(message.channel) == self.channel:
-                    logger.info(f"Triggered command '{self.name}' in channel #{self.channel}")
+            channel = self.get_channel(settings)
+            if channel:
+                if str(message.channel) == channel:
+                    logger.info(f"Triggered command '{self.name}' in channel #{channel}")
                     return True
                 else:
-                    logger.info(f"Command '{self.name}' only triggers in channel #{self.channel}")
+                    logger.info(f"Command '{self.name}' only triggers in channel #{channel}")
                     return False
             else:
                 logger.info(f"Triggered command '{self.name}'")
                 return True
 
-    def check_permission(self, author, guild, bot):
+    def check_permission(self, message, settings, bot):
         try:
-            permission = config()['commands'][self.name]['permission']
+            permission = settings['commands'][self.name]['permission']
         except KeyError:
             return True
-        highest_role = author.roles[-1]
-        bot_role = get_bot_role(bot, guild)
+        highest_role = message.author.roles[-1]
+        bot_role = get_bot_role(bot, message.guild)
         if permission == 'above':
             return highest_role > bot_role
         if permission == 'below':

@@ -8,7 +8,7 @@ class Info(Command):
         command_triggers = ['!info']
         super().__init__(command_name, command_triggers)
 
-    async def get_response(self, message, bot):
+    async def get_response(self, settings, message, bot):
 
         words = message.content.split(' ')
 

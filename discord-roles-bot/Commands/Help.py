@@ -9,14 +9,14 @@ class Help(Command):
         command_triggers = ['!roles', '!help']
         super().__init__(command_name, command_triggers)
 
-    async def get_response(self, message, bot):
+    async def get_response(self, settings, message, bot):
         available_roles = get_roles(bot, message.guild, True)
-        role_descriptions_dict, unused_roles = self.build_role_description_dict(available_roles)
+        role_descriptions_dict, unused_roles = self.build_role_description_dict(settings, available_roles)
         role_descriptions = self.role_descriptions_to_list(role_descriptions_dict)
 
         other_roles_str = '' if role_descriptions == '' or unused_roles == [] else 'Other available roles: '
-        if config()['commands']['roles']['allow_adding_multiple_roles_at_once']:
-            max_roles = config()['commands']['roles']['max_roles_at_once']
+        if settings['commands']['roles']['allow_adding_multiple_roles_at_once']:
+            max_roles = settings['commands']['roles']['max_roles_at_once']
             multiple_roles_str = f'You can add multiple at once (max {max_roles}), separated by spaces. '
         else:
             multiple_roles_str = ''
@@ -26,17 +26,18 @@ class Help(Command):
                    f"{other_roles_str}{', '.join(sorted(unused_roles))}```"
         return response
 
-    def get_role_description(self, role):
-        settings = config()
-        if str(role) in settings['roles'] and 'description' in settings['roles'][str(role)].keys():
+    def get_role_description(self, settings, role):
+        try:
             return settings['roles'][str(role)]['description']
+        except KeyError:
+            return None
 
 
-    def build_role_description_dict(self, available_roles):
+    def build_role_description_dict(self, settings, available_roles):
         dct = {}
         unused_roles = []
         for role in available_roles:
-            description = self.get_role_description(role)
+            description = self.get_role_description(settings, role)
             if description:
                 dct[str(role)] = description
             else:

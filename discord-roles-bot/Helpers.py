@@ -2,9 +2,10 @@ import discord
 
 # Returns the actual emote as a string if it's available in the server, otherwise just plain 'Kappa' text
 def get_kappa(guild):
-    try:
-        return str(discord.utils.get(guild.emojis, name='Kappa'))
-    except Exception:
+    kappa = str(discord.utils.get(guild.emojis, name='Kappa'))
+    if kappa and kappa != 'None':
+        return kappa
+    else:
         return 'Kappa'
 
 def find_string_match(item, lst):

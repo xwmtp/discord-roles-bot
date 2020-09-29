@@ -11,7 +11,7 @@ class Roles(Command):
         super().__init__(command_name, command_triggers)
 
 
-    async def get_response(self, message, bot):
+    async def get_response(self, settings, message, bot):
         response = []
 
         words = message.content.split(' ')
@@ -19,7 +19,7 @@ class Roles(Command):
             return 'Please add a role that you want added or removed'
 
         command = words[0]
-        requested_roles = self.get_requested_roles(words)
+        requested_roles = self.get_requested_roles(settings, words)
 
         available_roles = get_roles(bot, message.guild, True)
         unavailable_roles = get_roles(bot, message.guild, False)
@@ -38,11 +38,12 @@ class Roles(Command):
 
         return response
 
-    def get_requested_roles(self, words):
-        max_roles = config()['commands'][self.name]['max_roles_at_once']
-        if not max_roles:
-            max_roles = 5
-        if config()['commands'][self.name]['allow_adding_multiple_roles_at_once']:
+    def get_requested_roles(self, settings, words):
+        if settings['commands'][self.name]['allow_adding_multiple_roles_at_once']:
+            try:
+                max_roles = settings['commands'][self.name]['max_roles_at_once']
+            except KeyError:
+                max_roles = 5
             return words[1:max_roles+1]
         else:
             return [' '.join(words[1:])]
