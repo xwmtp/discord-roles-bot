@@ -3,10 +3,10 @@ import yaml
 import logging
 from shutil import copyfile
 
-logger = None
 CONFIG = dict()
 
 DEFAULT_SERVER_CONFIG = {
+        'default' : True,
         'commands' : {
             'roles' : {
                 'allow_adding_multiple_roles_at_once' : False
@@ -28,24 +28,18 @@ def check_configurations():
     else:
         with open(yml_location, "r") as ymlfile:
             config_dict = yaml.load(ymlfile, Loader=yaml.FullLoader)
-            print(config_dict)
             if validate_config(config_dict):
                 global CONFIG
                 CONFIG = config_dict
                 return True
 
 def config(server_id=None):
-    global logger
-    if not logger:
-        logger = logging.getLogger('roles_bot.command')
-
     if server_id is None:
         return CONFIG
     for server_settings in CONFIG['servers'].values():
         if server_settings['id'] == server_id:
             return server_settings
     else:
-        logger.info(f"WARNING: no settings found for server with id {server_id}, using default settings for this message")
         return DEFAULT_SERVER_CONFIG
 
 def validate_config(dct):

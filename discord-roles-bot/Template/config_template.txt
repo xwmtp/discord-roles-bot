@@ -1,5 +1,12 @@
 bot:
     token: token123
-commands:
-    roles:
-      allow_adding_multiple_roles_at_once: True
+
+logging:
+    level: info
+
+servers:
+    123 example server name:
+        id: 012345678912345678
+        commands:
+            roles:
+                allow_adding_multiple_roles_at_once: True
