@@ -5,8 +5,8 @@ logging:
     level: info
 
 servers:
-    123 example server name:
+    example server name, replace with your own server:
         id: 012345678912345678
         commands:
             roles:
-                allow_adding_multiple_roles_at_once: True
+                allow_adding_multiple_roles_at_once: False

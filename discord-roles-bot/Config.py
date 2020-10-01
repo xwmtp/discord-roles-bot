@@ -28,6 +28,7 @@ def check_configurations():
     else:
         with open(yml_location, "r") as ymlfile:
             config_dict = yaml.load(ymlfile, Loader=yaml.FullLoader)
+            print(config_dict)
             if validate_config(config_dict):
                 global CONFIG
                 CONFIG = config_dict
@@ -60,15 +61,21 @@ def validate_config(dct):
         pass
 
     # SERVERS
+    if 'servers' not in dct.keys() or dct['servers'] is None:
+        print("No server settings found in configuration/config.yml. The default settings will be used.")
+        return True
+
     for server_name, server_settings in dct['servers'].items():
+
+        if server_name == 'example server name, replace with your own server':
+            return print(f"ERROR: Please replace the server name '{server_name}' with the name of your own server. If you want to use default settings, delete all the settings under 'servers'.")
+
         try:
             server_id = server_settings['id']
             if type(server_id) != int:
                 return print("ERROR: The setting 'id' under 'servers' should be an integer. To get your server's ID, activate developer mode in Discord (settings -> appearance -> developer mode, right click your server name and select 'Copy ID'.")
         except KeyError:
             return print(f"ERROR: The setting 'id' under server '{server_name} is missing. To get your server's ID, activate developer mode in Discord (settings -> appearance -> developer mode, right click your server name and select 'Copy ID'.")
-
-
 
         # multiple roles setting
         try:
