@@ -28,7 +28,6 @@ def check_configurations():
     else:
         with open(yml_location, "r") as ymlfile:
             config_dict = yaml.load(ymlfile, Loader=yaml.FullLoader)
-            print(config_dict)
             if validate_config(config_dict):
                 global CONFIG
                 CONFIG = config_dict

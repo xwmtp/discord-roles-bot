@@ -3,6 +3,7 @@ from Config import config
 from Helpers import get_message_tag
 import discord
 import logging
+import traceback
 logger = logging.getLogger('roles_bot.bot')
 
 class Bot(discord.Client):
@@ -48,5 +49,6 @@ class Bot(discord.Client):
             if message.content == 'ping':
                 return await self.send_message('pong', message)
 
+
         except Exception as e:
-            print(f'ERROR while processing message {message.content}:\n{e}')
+            logger.error(traceback.format_exc())
